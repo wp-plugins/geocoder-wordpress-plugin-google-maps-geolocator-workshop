@@ -1,0 +1,30 @@
+<form action="#" method="post" id="bmlt_geolocator_admin_form">
+	<div id="bmlt_tools_form_contents" style="margin-left:auto;margin-right:auto;text-align:left;width:808px;background-color:#555;padding:4px">
+		<noscript><h1 style="text-align:center;color:red">THIS WILL NOT WORK, BECAUSE YOU DO NOT HAVE JAVASCRIPT ENABLED.</h1></noscript>
+		<h3 style="color:white;text-align:center">Geolocation Tool Settings</h3>
+		<div style="margin-top:2px;margin-bottom:2px;background-color:white; height: 30px; line-height:30px;vertical-align:middle">
+			<label for="bmlt_geolocator_admin_form_api_key" style="float:left;width:200px; font-weight:bold;text-align:right">Google Maps API Key:</label>
+			<input type="text" style="font-size:small;float:left;width:604px" id="bmlt_geolocator_admin_form_api_key" name="bmlt_geolocator_admin_form_api_key" />
+			<div style="clear:both"></div>
+		</div>
+		<div style="margin-top:2px;margin-bottom:2px;background-color:white; height: 30px; line-height:30px;vertical-align:middle">
+			<input type="checkbox" style="diaplay:block;float:left;margin-left:180px;width:20px;height:30px" id="bmlt_geolocator_admin_form_show_longlat" name="bmlt_geolocator_admin_form_show_longlat" value="1" onchange="if(!this.checked){document.getElementById('bmlt_geolocator_admin_form_show_map').checked=null;document.getElementById('bmlt_geolocator_admin_form_show_map').disabled=true}else{document.getElementById('bmlt_geolocator_admin_form_show_map').disabled=false}" />
+			<label for="bmlt_geolocator_admin_form_show_longlat" style="float:left;width:300px; font-weight:bold">Show Longitude and Latitude Items</label>
+			<div style="clear:both"></div>
+		</div>
+		<div style="margin-top:2px;margin-bottom:2px;background-color:white; height: 30px; line-height:30px;vertical-align:middle">
+			<input type="checkbox" style="diaplay:block;float:left;margin-left:180px;width:20px;height:30px" id="bmlt_geolocator_admin_form_show_map" name="bmlt_geolocator_admin_form_show_map" value="1" />
+			<label for="bmlt_geolocator_admin_form_show_map" style="float:left;width:300px; font-weight:bold">Show Map Checkbox</label>
+			<div style="clear:both"></div>
+		</div>
+		<div style="margin-top:2px;margin-bottom:2px;background-color:white; height: 30px; line-height:30px;vertical-align:middle">
+			<input type="checkbox" style="diaplay:block;float:left;margin-left:180px;width:20px;height:30px" id="bmlt_geolocator_admin_form_show_debug" name="bmlt_geolocator_admin_form_show_debug" value="1" />
+			<label for="bmlt_geolocator_admin_form_show_debug" style="float:left;width:300px; font-weight:bold">Show Raw Google Data Dump Checkbox</label>
+			<div style="clear:both"></div>
+		</div>
+		<div style="text-align:center">
+			<input style="display:block;margin-left:auto;margin-right:auto" type="submit" name="save_geolocator_settings" value="Save These Settings" />
+		</div>
+		<div class="clear_both"></div>
+	</div>
+</form>
