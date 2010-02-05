@@ -27,9 +27,12 @@
 					If there are more than one places that correspond to the given data, they are displayed, one at a time, and links
 					are provided to help you select which one is displayed.
 			-------------------------------------------------------------------------------------------------------------------------
-			Version: 1.1.6
+			Version: 1.1.7
 			
 			RELEASE NOTES:
+				- February 5, 2010 -1.1.7 Release
+					- Added accuracy bar indicator to search results.
+					
 				- February 4, 2010 -1.1.6 Release
 					- Added block delimiters ("##START_" and "##END_") to allow parsing by the WordPress Plugin.
 				
@@ -180,7 +183,33 @@
 					document.getElementById('bmlt_tools_lookup_long_lat_line' ).style.display = 'block';
 					};
 			};
-
+		
+		/***************************************************************************************/
+		/**
+			\brief Outputs a gradient scale to indicate the accuracy.
+			
+			This will be used for the background of the accuracy indicator, which is a 10-step scale (0-9).
+			A bar will be displayed over it to show the accuracy.
+		*/
+		function draw_scale ()
+			{
+				var grRed1 = 255;
+				var grGreen1 = 0;
+				var grBlue1 = 0;
+				
+				var grRed2 = 0;
+				var grGreen2 = 255;
+				var grBlue2 = 0;
+				
+				for ( var i = 1; i < 300; i++ )
+					{
+					var red = grRed1 + Math.round ( i * ( ( grRed2-grRed1 ) / 300 ) );
+					var green = grGreen1 + Math.round ( i * ( ( grGreen2 - grGreen1 ) / 300 ) );
+					var blue = grBlue1 + Math.round ( i * ( ( grBlue2 - grBlue1 ) / 300 ) );
+					document.write('<div class="line" style="background:RGB('+red.toString()+','+green.toString()+','+blue.toString()+')"></div>');
+					};
+			};
+	
 	/***********************************************************************************************/
 	/**************************************** ENTRY DISPLAY ****************************************/
 	/***********************************************************************************************/
@@ -372,6 +401,8 @@
 				document.getElementById('bmlt_tools_lookup_address_long').innerHTML = '&nbsp;';
 				document.getElementById('bmlt_tools_lookup_address_lat').innerHTML = '&nbsp;';
 				document.getElementById('bmlt_tools_goo_go').style.display = 'none';
+				document.getElementById('bmlt_tools_accuracy_display').style.display = 'none';
+				document.getElementById('bmlt_tools_address_transfer_container').style.display = 'none';
 				document.getElementById('bmlt_tools_placemark_rotator_controls').style.display = 'none';
 				document.getElementById('bmlt_tools_goo_go_a').href = null;
 			};
@@ -496,6 +527,25 @@
 					{
 					// Yeah, this is an ugly, kludgy mess, but a full recursive-descent parser is WAY overkill for this. It's like writing a full-power TIFF reader. The fox usually ain't worth the chase.
 					var pm = geocode_response.Placemark[g_pm_index-1];
+					
+					var accuracy_bar = document.getElementById ( 'bmlt_tools_accuracy_scale' );
+					
+					if ( accuracy_bar )
+						{
+						var acc = parseInt ( pm.AddressDetails.Accuracy );
+						
+						if ( !isNaN (acc) && (acc >= 0) && (acc < 10) )
+							{
+							accuracy_bar.className = 'acc'+acc.toString();
+							}
+						else
+							{
+							accuracy_bar.className = 'accDisabled';
+							};
+						};
+					
+					document.getElementById('bmlt_tools_accuracy_display').style.display = 'block';
+					document.getElementById('bmlt_tools_address_transfer_container').style.display = 'block';
 					
 					if ( g_pm_index_max > 1 )
 						{
@@ -1027,33 +1077,23 @@
 				}
 			
 			/* This is the left-hand (data entry) container. */
-			#bmlt_tools_address_source_container
+			#bmlt_tools_main_container #bmlt_tools_address_source_container
 				{
 				width: 390px;
 				background-color: #ff9;
 				}
 			
 			/* This is the right-hand (geocode result) container. */
-			#bmlt_tools_address_lookup_container
+			#bmlt_tools_main_container #bmlt_tools_address_lookup_container
 				{
 				width: 400px;
 				background-color: #ccc;
 				float:right;
 				}
 			
-			.padding_div
-				{
-				height: 60px;
-				}
-			
-			.padding_div_2
-				{
-				padding-top: 34px;
-				}
-			
 			/* This is the title at the top of each container. */
-			#bmlt_tools_address_source_container h1,
-			#bmlt_tools_address_lookup_container h1
+			#bmlt_tools_main_container #bmlt_tools_address_source_container h1,
+			#bmlt_tools_main_container #bmlt_tools_address_lookup_container h1
 				{
 				font-size: medium;
 				font-weight: bold;
@@ -1067,27 +1107,27 @@
 				}
 			
 			/* They each have 4 pixels of padding at the top. */
-			#bmlt_tools_address_lookup_container,
-			#bmlt_tools_address_source_container
+			#bmlt_tools_main_container #bmlt_tools_address_lookup_container,
+			#bmlt_tools_main_container #bmlt_tools_address_source_container
 				{
 				padding-top:4px;
 				}
 			
 			/* Since the background for the transfer link column is dark, we use a lighter link for these. */
-			#bmlt_tools_address_transfer_container	a,
-			#bmlt_tools_address_transfer_container	a:visited
+			#bmlt_tools_main_container #bmlt_tools_address_transfer_container	a,
+			#bmlt_tools_main_container #bmlt_tools_address_transfer_container	a:visited
 				{
 				color: #ccf;
 				}
 			
-			#bmlt_tools_address_transfer_container	a:hover,
-			#bmlt_tools_address_transfer_container	a:active
+			#bmlt_tools_main_container #bmlt_tools_address_transfer_container	a:hover,
+			#bmlt_tools_main_container #bmlt_tools_address_transfer_container	a:active
 				{
 				color: #f96;
 				}
 			
 			/* This is the "transfer all" link at the top of the links column. */
-			#bmlt_tools_address_transfer_container .one_line_form_all
+			#bmlt_tools_main_container #bmlt_tools_address_transfer_container .one_line_form_all
 				{
 				margin-top:4px;
 				height: 30px;
@@ -1096,40 +1136,40 @@
 				}
 			
 			/* Its link is a different color from the rest of them. */
-			#bmlt_tools_address_transfer_container	.one_line_form_all a,
-			#bmlt_tools_address_transfer_container	.one_line_form_all a:visited
+			#bmlt_tools_main_container #bmlt_tools_address_transfer_container	.one_line_form_all a,
+			#bmlt_tools_main_container #bmlt_tools_address_transfer_container	.one_line_form_all a:visited
 				{
 				color: #33c;
 				}
 			
-			#bmlt_tools_address_transfer_container	.one_line_form_all a:hover,
-			#bmlt_tools_address_transfer_container	.one_line_form_all a:active
+			#bmlt_tools_main_container #bmlt_tools_address_transfer_container	.one_line_form_all a:hover,
+			#bmlt_tools_main_container #bmlt_tools_address_transfer_container	.one_line_form_all a:active
 				{
 				color: #c33;
 				}
 
 			/* All three containers float against each other. */
-			#bmlt_tools_address_transfer_container,
-			#bmlt_tools_address_source_container
+			#bmlt_tools_main_container #bmlt_tools_address_transfer_container,
+			#bmlt_tools_main_container #bmlt_tools_address_source_container
 				{
 				float:left;
 				}
 			
-			#bmlt_tools_address_transfer_container
+			#bmlt_tools_main_container #bmlt_tools_address_transfer_container
 				{
 				margin-left:2px;
 				}
 			
 			/* The arrow links are heavy. */
-			#bmlt_tools_address_transfer_container,
-			#bmlt_tools_placemark_count_decrement,
-			#bmlt_tools_placemark_count_increment
+			#bmlt_tools_main_container #bmlt_tools_address_transfer_container,
+			#bmlt_tools_main_container #bmlt_tools_placemark_count_decrement,
+			#bmlt_tools_main_container #bmlt_tools_placemark_count_increment
 				{
 				font-weight:bold;
 				}
 			
 			/* This is the div that contains the multiple results navigation. */
-			#bmlt_tools_placemark_rotator_controls
+			#bmlt_tools_main_container #bmlt_tools_placemark_rotator_controls
 				{
 				height: 40px;
 				line-height: 40px;
@@ -1138,27 +1178,27 @@
 			/* These three classes describe the layout of the multiple results navigation. */
 			
 			/* The "decrement" link floats to the left. */
-			#bmlt_tools_placemark_count_decrement
+			#bmlt_tools_main_container #bmlt_tools_placemark_count_decrement
 				{
 				float:left;
 				padding-left: 20px;
 				}
 			
 			/* The text item is centered between the two arrows. */
-			#bmlt_tools_placemark_count
+			#bmlt_tools_main_container #bmlt_tools_placemark_count
 				{
 				text-align:center;
 				}
 				
 			/* The "increment" link floats to the right. */
-			#bmlt_tools_placemark_count_increment
+			#bmlt_tools_main_container #bmlt_tools_placemark_count_increment
 				{
 				float:right;
 				padding-right: 20px;
 				}
 			
 			/* Each of the links inside the column of links. */
-			#bmlt_tools_address_transfer_container div
+			#bmlt_tools_main_container #bmlt_tools_address_transfer_container div
 				{
 				margin-left:0;
 				width:24px;
@@ -1168,7 +1208,7 @@
 				}
 			
 			/* In all three areas, we have lines that contain text items. We want them to line up with each other, so we use the same class for them all. */
-			.one_line_form
+			#bmlt_tools_main_container .one_line_form
 				{
 				clear:both;
 				float:none;
@@ -1181,8 +1221,8 @@
 				}
 			
 			/* The right and left forms use labels on the left. */
-			.one_line_form label,
-			.one_line_form .label
+			#bmlt_tools_main_container .one_line_form label,
+			#bmlt_tools_main_container .one_line_form .label
 				{
 				font-weight: bold;
 				display: block;
@@ -1192,7 +1232,7 @@
 				}
 			
 			/* These are the text items in the left form. */
-			.one_line_form input
+			#bmlt_tools_main_container .one_line_form input
 				{
 				width: 246px;
 				margin-left:4px;
@@ -1200,7 +1240,7 @@
 				}
 			
 			/* These are for the text divs in the right form. */
-			.one_line_form div
+			#bmlt_tools_main_container .one_line_form div
 				{
 				float:left;
 				margin-left:4px;
@@ -1208,9 +1248,9 @@
 				}
 			
 			/* The longitude/latitude are on one line. Their sizes are different. */
-			#bmlt_tools_address_long_lat label,
-			#bmlt_tools_lookup_long_lat_line label,
-			#bmlt_tools_lookup_long_lat_line .label
+			#bmlt_tools_main_container #bmlt_tools_address_long_lat label,
+			#bmlt_tools_main_container #bmlt_tools_lookup_long_lat_line label,
+			#bmlt_tools_main_container #bmlt_tools_lookup_long_lat_line .label
 			
 				{
 				float:left;
@@ -1222,8 +1262,8 @@
 				}
 			
 			/* These are the text items for each. */
-			#bmlt_tools_address_long_lat input,
-			#bmlt_tools_lookup_long_lat_line div
+			#bmlt_tools_main_container #bmlt_tools_address_long_lat input,
+			#bmlt_tools_main_container #bmlt_tools_lookup_long_lat_line div
 				{
 				float:left;
 				width: 100px;
@@ -1231,7 +1271,7 @@
 				}
 			
 			/* This is the "live" address string item in the left form that reflects the current input. */
-			#bmlt_tools_address_string
+			#bmlt_tools_main_container #bmlt_tools_address_string
 				{
 				height:60px;
 				line-height:20px;
@@ -1239,8 +1279,8 @@
 				}
 			
 			/* This is the div that contains the two buttons in the left-hand form. */
-			#bmlt_tools_address_submit_line,
-			#bmlt_tools_address_reverse_submit_line
+			#bmlt_tools_main_container #bmlt_tools_address_submit_line,
+			#bmlt_tools_main_container #bmlt_tools_address_reverse_submit_line
 				{
 				clear:both;
 				float: none;
@@ -1251,8 +1291,8 @@
 				}
 			
 			/* These are the two buttons. */
-			#bmlt_tools_address_submit_line input,
-			#bmlt_tools_address_reverse_submit_line input
+			#bmlt_tools_main_container #bmlt_tools_address_submit_line input,
+			#bmlt_tools_main_container #bmlt_tools_address_reverse_submit_line input
 				{
 				float: none;
 				width:120px;
@@ -1261,7 +1301,7 @@
 				}
 			
 			/* This is the Google Maps link in the right-hand form. */
-			#bmlt_tools_goo_go
+			#bmlt_tools_main_container #bmlt_tools_goo_go
 				{
 				text-align:center;
 				font-weight:bold;
@@ -1269,7 +1309,7 @@
 				}
 			
 			/* This is the debug pre element. */
-			#bmlt_tools_dump_pre
+			#bmlt_tools_main_container #bmlt_tools_dump_pre
 				{
 				clear:both;
 				margin-top: 4px;
@@ -1278,7 +1318,7 @@
 				}
 			
 			/* This is the map display element. */
-			#bmlt_tools_map_div
+			#bmlt_tools_main_container #bmlt_tools_map_div
 				{
 				clear:both;
 				margin: 4px;
@@ -1286,8 +1326,8 @@
 				}
 			
 			/* Debug/Map Checkbox is small. */
-			#bmlt_tools_map_checkbox,
-			#bmlt_tools_debug_checkbox
+			#bmlt_tools_main_container #bmlt_tools_map_checkbox,
+			#bmlt_tools_main_container #bmlt_tools_debug_checkbox
 				{
 				width: 20px;
 				height: 30px;
@@ -1295,8 +1335,8 @@
 				}
 				
 			/* The Debug/Map check label is an inline element with no float or predetermined size. */
-			#bmlt_tools_map_check_label,
-			#bmlt_tools_debug_check_label
+			#bmlt_tools_main_container #bmlt_tools_map_check_label,
+			#bmlt_tools_main_container #bmlt_tools_debug_check_label
 				{
 				color: white;
 				display: inline;
@@ -1307,8 +1347,119 @@
 				vertical-align: middle;
 				}
 			
+			#bmlt_tools_main_container .padding_div
+				{
+				height: 60px;
+				}
+			
+			#bmlt_tools_main_container .padding_div_2
+				{
+				padding-top: 34px;
+				}
+			
+			#bmlt_tools_main_container #bmlt_tools_padding_div_scale
+				{
+				text-align:center;
+				}
+			
+			#bmlt_tools_main_container #bmlt_tools_accuracy_label
+				{
+				height: 20px;
+				line-height: 20px;
+				font-weight: bold;
+				margin-left:20px;
+				}
+				
+			/* This is the gradient that displays the accuracy of the geolocator response */
+			#bmlt_tools_main_container #bmlt_tools_accuracy_gradient
+				{
+				width: 300px;
+				height: 10px;
+				border:1px solid black;
+				margin-top: 5px;
+				margin-bottom: 25px;
+				margin-left: auto;
+				margin-right: auto;
+				}
+			
+			#bmlt_tools_main_container #bmlt_tools_accuracy_gradient .line
+				{
+				width:1px;
+				height:10px;
+				float:left;
+				}
+			
+			#bmlt_tools_main_container div#bmlt_tools_accuracy_scale
+				{
+				width:4px;
+				height:12px;
+				border-color: black;
+				border-style:solid;
+				border-top-width: 2px;
+				border-bottom-width: 2px;
+				border-left-width: 1px;
+				border-right-width: 1px;
+				position: absolute;
+				top: 65px;
+				}
+			
+			#bmlt_tools_main_container div#bmlt_tools_accuracy_scale.accDisabled
+				{
+				display:none;
+				}
+			
+			#bmlt_tools_main_container div#bmlt_tools_accuracy_scale.acc0
+				{
+				left: 477px;
+				}
+			
+			#bmlt_tools_main_container div#bmlt_tools_accuracy_scale.acc1
+				{
+				left: 507px;
+				}
+			
+			#bmlt_tools_main_container div#bmlt_tools_accuracy_scale.acc2
+				{
+				left: 537px;
+				}
+			
+			#bmlt_tools_main_container div#bmlt_tools_accuracy_scale.acc3
+				{
+				left: 567px;
+				}
+			
+			#bmlt_tools_main_container div#bmlt_tools_accuracy_scale.acc4
+				{
+				left: 597px;
+				}
+			
+			#bmlt_tools_main_container div#bmlt_tools_accuracy_scale.acc5
+				{
+				left: 627px;
+				}
+			
+			#bmlt_tools_main_container div#bmlt_tools_accuracy_scale.acc6
+				{
+				left: 657px;
+				}
+			
+			#bmlt_tools_main_container div#bmlt_tools_accuracy_scale.acc7
+				{
+				left: 687px;
+				}
+			
+			#bmlt_tools_main_container div#bmlt_tools_accuracy_scale.acc8
+				{
+				left: 717px;
+				}
+			
+			#bmlt_tools_main_container div#bmlt_tools_accuracy_scale.acc9
+				{
+				left: 747px;
+				}
+			
 			/* This is the big "NO DATA" in an empty debug area. */
-			.no_data_span
+			#bmlt_tools_main_container .no_data_span
 				{
 				font-weight: bold;
 				font-size: large;
@@ -1433,11 +1584,14 @@
 			<div id="bmlt_tools_address_lookup_container" style="display:none">
 				<h1>Lookup Result</h1>
 				<div id="bmlt_tools_lookup_contents">
-					<div class="padding_div"></div>
-					<div class="one_line_form">
-						<div class="label">Street Address:</div>
-						<div id="bmlt_tools_lookup_address_street">&nbsp;</div>
-						<div class="clear_both"></div>
+					<div id="bmlt_tools_accuracy_display" style="display: none">
+						<div id="bmlt_tools_accuracy_label">Accuracy:</div>
+						<div id="bmlt_tools_padding_div_scale"><div id="bmlt_tools_accuracy_gradient"><div id="bmlt_tools_accuracy_scale" class="accDisabled"></div><script type="text/javascript">/* <![CDATA[ */ draw_scale(); /* ]]> */</script></div></div>
+						<div class="one_line_form">
+							<div class="label">Street Address:</div>
+							<div id="bmlt_tools_lookup_address_street">&nbsp;</div>
+							<div class="clear_both"></div>
+						</div>
 					</div>
 					<div class="one_line_form">&nbsp;</div>
 					<div class="one_line_form">
