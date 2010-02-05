@@ -16,7 +16,7 @@ This is an extension of a utility that was written in order to help data entry p
 It has administration options ("Geolocator Options", in "Settings"), and can have the ability to see the map and the raw dump checkboxes limited.
 
 == Installation ==
-1. Upload the 'geolocator-wordpress-plugin` directory to the `/wp-content/plugins/` directory
+1. Upload the `geolocator-wordpress-plugin` directory to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Place `<!--GEOLOCATOR-->` in the HTML view of a page. It will be replaced by the plugin.
 
