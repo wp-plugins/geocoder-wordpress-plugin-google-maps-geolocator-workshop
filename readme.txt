@@ -14,11 +14,14 @@ It shows two forms: One on the left, and one on the right. The left form allows 
 It is possible to display an interactive map, and also to examine the raw JSON data sent back from the geocode/reverse geocode lookup.
 This is an extension of a utility that was written in order to help data entry personnel enter accurat address information.
 It has administration options ("Geolocator Options", in "Settings"), and can have the ability to see the map and the raw dump checkboxes limited.
+The plugin outputs highly optimized code that is XHTML 1.0 Strict compliant, as wel as WAI AAA.
 
 == Installation ==
 1. Upload the `geolocator-wordpress-plugin` directory to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Place `<!--GEOLOCATOR-->` in the HTML view of a page. It will be replaced by the plugin.
+1. You need to get a Google Maps API Key ( http://code.google.com/apis/maps/signup.html ) for the domain of your site.
+1. Go to the settings (in the Admin->Settings Menu), and add the Google Maps API key (you don't need it if you are running as localhost, but almost no CMS is ever run that way).
+1. Place `<!--GEOLOCATOR-->` in the HTML view of a page or a post. It will be replaced by the plugin output.
 
 == Screenshots ==
 
