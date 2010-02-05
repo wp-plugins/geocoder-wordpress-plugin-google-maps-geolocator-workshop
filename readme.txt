@@ -28,7 +28,9 @@ The plugin outputs highly optimized code that is XHTML 1.0 Strict compliant, as 
 1. The simplest form of the plugin
 2. The plugin with the two checkboxes enabled
 3. The interactive map
-4. The administration options
+4. The response data from Google
+5. Reverse geocode and response data
+6. The administration options
 
 == Changelog ==
 
