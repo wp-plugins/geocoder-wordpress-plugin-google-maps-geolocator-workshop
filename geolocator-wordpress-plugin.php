@@ -7,7 +7,7 @@
 	an allows you to add an API key for a deployment into a server.
 	
 Plugin Name: Geocoder WordPress Plugin
-Plugin URI: http://magshare.org/
+Plugin URI: http://magshare.org/geolocator-tool/
 Description: This is a WordPress plugin implementation of the BMLT Tools Geolocator Tool, which is highly useful for many purposes.
 Version: 1.1.6
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
