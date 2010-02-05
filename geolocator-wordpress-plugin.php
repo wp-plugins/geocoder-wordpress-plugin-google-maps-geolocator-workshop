@@ -9,7 +9,7 @@
 Plugin Name: Geocoder WordPress Plugin
 Plugin URI: http://magshare.org/
 Description: This is a WordPress plugin implementation of the BMLT Tools Geolocator Tool, which is highly useful for many purposes.
-Version: 1.0.0
+Version: 1.1.6
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 You need to specify "<!--GEOLOCATOR-->" in the code section of a page or a post.
 */ 
