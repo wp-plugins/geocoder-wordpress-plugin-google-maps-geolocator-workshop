@@ -9,7 +9,7 @@ This is a plugin that displays a "worksheet" for verifying and researching addre
 
 == Description ==
 
-This plugin is really mean to be an aid to folks doing data entry, and trying to find locations with Google Maps.
+This plugin is really meant to be an aid to folks doing data entry, and trying to find locations with Google Maps.
 It shows two forms: One on the left, and one on the right. The left form allows you to enter address information, or a longitude/latitude pair, and the right form shows the result of a geocode lookup or a reverse geocode.
 It is possible to display an interactive map, and also to examine the raw JSON data sent back from the geocode/reverse geocode lookup.
 This is an extension of a utility that was written in order to help data entry personnel enter accurate address information.
