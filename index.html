@@ -27,9 +27,12 @@
 					If there are more than one places that correspond to the given data, they are displayed, one at a time, and links
 					are provided to help you select which one is displayed.
 			-------------------------------------------------------------------------------------------------------------------------
-			Version: 1.1.8
+			Version: 1.1.9
 			
 			RELEASE NOTES:
+				- February 6, 2010 -1.1.9 Release
+					- Worked on optimizing and improving the appearance of the accuracy bar.
+					
 				- February 5, 2010 -1.1.8 Release
 					- Fixed a CSS bug in that bar.
 					
@@ -142,6 +145,7 @@
 						};
 					ClearAddressForm ();
 					ClearLookupResults ( );
+					DrawAccuracyScale();
 					document.getElementById('bmlt_tools_address_street').focus();
 					if ( g_show_long_lat_info && g_show_map_checkbox )
 						{
@@ -194,57 +198,58 @@
 			This will be used for the background of the accuracy indicator, which is a 10-step scale (0-9).
 			A bar will be displayed over it to show the accuracy.
 		*/
-		function draw_scale(
-							inAcc	///< An integer, the accuracy value.
-							)
+		function SetAccuracyValue(
+									inAcc	///< An integer, the accuracy value.
+									)
 			{
-				var grRed1 = 255;
-				var grGreen1 = 0;
-				var grBlue1 = 0;
+				var scale_indicator = document.getElementById('bmlt_tools_accuracy_scale');
 				
-				var grRed2 = 0;
-				var grGreen2 = 255;
-				var grBlue2 = 0;
-				
-				var	par = document.getElementById('bmlt_tools_accuracy_gradient');
-				
-				if ( par )
+				if ( !scale_indicator )
 					{
-					if ( par.hasChildNodes() )
-						{
-						var kid = par.firstChild;
-						
-						while ( kid )
-							{
-							var sibling = kid.nextSibling;
-							par.removeChild(kid);
-							kid = null;
-							kid = sibling;
-							};
-						};
+					DrawAccuracyScale();
+					scale_indicator = document.getElementById('bmlt_tools_accuracy_scale');
+					};
+				
+				if ( scale_indicator )
+					{
+					scale_indicator.className = ((inAcc >= 0) && (inAcc<10))?'acc'+inAcc.toString():'accDisabled';
+					};
+			};
+		
+		/***************************************************************************************/
+		/**
+			\brief Outputs a gradient scale to indicate the accuracy.
+			
+			This will be used for the background of the accuracy indicator, which is a 10-step scale (0-9).
+			A bar will be displayed over it to show the accuracy.
+		*/
+		function DrawAccuracyScale()
+			{
+				// Only do this if we haven't already.
+				if ( !document.getElementById('bmlt_tools_accuracy_scale') )
+					{
+					var	par = document.getElementById('bmlt_tools_accuracy_gradient');
 					
-					for ( var i = 1; i < 300; i++ )
+					if ( par )
 						{
-						var nod = document.createElement ( "div" );
-						if ( nod )
+						for ( var i = 1; i < 300; i+=3 )
 							{
-							var red = grRed1 + Math.round ( i * ( ( grRed2-grRed1 ) / 300 ) );
-							var green = grGreen1 + Math.round ( i * ( ( grGreen2 - grGreen1 ) / 300 ) );
-							var blue = grBlue1 + Math.round ( i * ( ( grBlue2 - grBlue1 ) / 300 ) );
+							var nod = document.createElement ( "div" );
+							if ( nod )
+								{
+								nod.className = 'line';
+								par.appendChild ( nod );
+								};
+							};
 							
-							nod.style.backgroundColor = 'rgb('+red.toString()+','+green.toString()+','+blue.toString()+')';
-							nod.className = 'line';
-							par.appendChild ( nod );
-							};
-						};
+						var slider = document.createElement ( "div" );
 						
-					var slider = document.createElement ( "div" );
-					
-					if ( slider )
-						{
-						slider.id = 'bmlt_tools_accuracy_scale';
-						slider.className = ((inAcc >= 0) && (inAcc<10))?'acc'+inAcc.toString():'accDisabled';
-						par.appendChild ( slider );
+						if ( slider )
+							{
+							slider.id = 'bmlt_tools_accuracy_scale';
+							slider.className = 'accDisabled';
+							par.appendChild ( slider );
+							};
 						};
 					};
 			};
@@ -566,7 +571,7 @@
 					{
 					// Yeah, this is an ugly, kludgy mess, but a full recursive-descent parser is WAY overkill for this. It's like writing a full-power TIFF reader. The fox usually ain't worth the chase.
 					var pm = geocode_response.Placemark[g_pm_index-1];
-					draw_scale(parseInt ( pm.AddressDetails.Accuracy ));
+					SetAccuracyValue(parseInt ( pm.AddressDetails.Accuracy ));
 					document.getElementById('bmlt_tools_accuracy_display').style.display = 'block';
 					document.getElementById('bmlt_tools_address_transfer_container').style.display = 'block';
 					
@@ -1396,6 +1401,7 @@
 			/* This is the gradient that displays the accuracy of the geolocator response */
 			#bmlt_tools_main_container #bmlt_tools_accuracy_gradient
 				{
+				float:left;
 				width: 300px;
 				height: 10px;
 				border:1px solid black;
@@ -1403,6 +1409,8 @@
 				margin-bottom: 25px;
 				margin-left: auto;
 				margin-right: auto;
+				background-color:#ffc;
+				padding-left:2px;
 				}
 			
 			/* This is the accuracy indicator that moves around the bar. */
@@ -1410,7 +1418,7 @@
 				{
 				width:4px;
 				height:12px;
-				border-color: black;
+				border-color: #555;
 				border-style:solid;
 				border-top-width: 2px;
 				border-bottom-width: 2px;
@@ -1423,9 +1431,11 @@
 			/* Each line in the gradient is one pixel wide. */
 			#bmlt_tools_main_container #bmlt_tools_accuracy_gradient .line
 				{
-				width:1px;
-				height:10px;
+				width:2px;
+				height:5px;
+				margin-top:5px;
 				float:left;
+				border-left:1px solid #555;
 				}
 			
 			/* The scale can be hidden. */
@@ -1483,6 +1493,17 @@
 			#bmlt_tools_main_container div#bmlt_tools_accuracy_scale.acc9
 				{
 				left: 297px;
+				}
+				
+			#bmlt_tools_acc_min,
+			#bmlt_tools_acc_max
+				{
+				float:left;
+				width: 47px;
+				line-height: 24px;
+				height:20px;
+				font-size: xx-small;
+				vertical-align:middle;
 				}
 			
 			/* This is the big "NO DATA" in an empty debug area. */
@@ -1614,7 +1635,9 @@
 					<div id="bmlt_tools_accuracy_display" style="display: none">
 						<div id="bmlt_tools_accuracy_label">Accuracy:</div>
 						<div id="bmlt_tools_padding_div_scale">
+							<div id="bmlt_tools_acc_min">Less</div>
 							<div id="bmlt_tools_accuracy_gradient"></div>
+							<div id="bmlt_tools_acc_max">More</div>
 						</div>
 						<div class="one_line_form">
 							<div class="label">Street Address:</div>

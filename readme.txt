@@ -3,7 +3,7 @@ Contributors: magblogapi
 Tags: google maps,map,geocode,reverse geocode,longitude,latitude,address
 Requires at least: 2.0
 Tested up to: 2.9.1
-Stable tag: 1.1.8
+Stable tag: 1.1.9
 
 This is a plugin that displays a "worksheet" for verifying and researching addresses with Google Maps.
 
@@ -33,6 +33,9 @@ The plugin outputs highly optimized code that is XHTML 1.0 Strict compliant, as 
 6. The administration options
 
 == Changelog ==
+
+1.1.9 -February 6, 2010
+	- Worked on optimizing and improving the appearance of the accuracy bar.
 
 1.1.8 -February 5, 2010
 	- Fixed a positioning bug in the gradient.
