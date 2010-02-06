@@ -143,10 +143,10 @@
 						SetBlankDebugData ();
 						document.getElementById('bmlt_tools_debug_display').style.display = 'block';
 						};
-					ClearAddressForm ();
 					ClearLookupResults ( );
 					DrawAccuracyScale();
-					document.getElementById('bmlt_tools_address_street').focus();
+					ClearAddressForm ();
+
 					if ( g_show_long_lat_info && g_show_map_checkbox )
 						{
 						document.getElementById('bmlt_tools_map_checkbox').checked = false;
