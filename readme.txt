@@ -40,11 +40,11 @@ The raw data window shows the entire response from Google Maps, presented in a h
 
 1. The simplest form of the plugin
 2. The plugin with the two checkboxes enabled
-3. The interactive map
-4. The response data from Google
-5. Reverse geocode and response data
-6. A basic lookup (Note entire address in one line)
-7. A reverse geocode from just the longitude and latitude
+3. A basic lookup (Note entire address in one line)
+4. A reverse geocode from just the longitude and latitude
+5. The interactive map (The yellow marker can be moved, and is linked to the Longitude and Latitude items in the left box)
+6. The response data from Google (Address Lookup)
+7. The response data from Google (Long/Lat Lookup)
 8. The administration options
 
 == Changelog ==
