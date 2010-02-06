@@ -193,13 +193,13 @@
 		
 		/***************************************************************************************/
 		/**
-			\brief Outputs a gradient scale to indicate the accuracy.
+			\brief Moves the accuracy indicator to show the accuracy.
 			
-			This will be used for the background of the accuracy indicator, which is a 10-step scale (0-9).
-			A bar will be displayed over it to show the accuracy.
+			The indicator is a relatively-positioned element that is moved by assigning calls names.
+			This makes it more robust for cross-browser support.
 		*/
 		function SetAccuracyValue(
-									inAcc	///< An integer, the accuracy value.
+									inAcc	///< An integer, the accuracy value (0-9).
 									)
 			{
 				var scale_indicator = document.getElementById('bmlt_tools_accuracy_scale');
@@ -218,10 +218,11 @@
 		
 		/***************************************************************************************/
 		/**
-			\brief Outputs a gradient scale to indicate the accuracy.
+			\brief Outputs a scale to indicate the accuracy.
 			
 			This will be used for the background of the accuracy indicator, which is a 10-step scale (0-9).
-			A bar will be displayed over it to show the accuracy.
+			A bar will be displayed over it to show the accuracy. 98 little "ticks" are shown against a parchment
+			background.
 		*/
 		function DrawAccuracyScale()
 			{
