@@ -13,8 +13,8 @@ This plugin is really meant to be an aid to folks doing data entry, and trying t
 It shows two forms: One on the left, and one on the right. The left form allows you to enter address information, or a longitude/latitude pair, and the right form shows the result of a geocode lookup or a reverse geocode.
 It is possible to display an interactive map, and also to examine the raw JSON data sent back from the geocode/reverse geocode lookup.
 This is an extension of a utility that was written in order to help data entry personnel enter accurate address information.
-It has administration options ("Geolocator Options", in "Settings"), and can have the ability to see the map and the raw dump checkboxes limited.
-The plugin outputs highly optimized code that is XHTML 1.0 Strict compliant, as wel as WAI AAA.
+It has administration options ("Geolocator Options", in "Settings").
+The plugin outputs highly optimized code that is XHTML 1.0 Strict compliant, as well as WAI AAA.
 
 == Installation ==
 
