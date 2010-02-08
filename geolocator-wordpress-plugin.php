@@ -1,7 +1,10 @@
 <?php
 /********************************************************************/
 /**
-	\brief This is an "optimizer" for the geolocator tool.
+	\brief This is a gelocator tool plugin.
+	
+	This reads in the index.html file that implements a standalone geocoder, and parses
+	it to provide this plugin.
 	
 	It will strip the returned code down to an optimal HTTP stream,
 	an allows you to add an API key for a deployment into a server.
@@ -9,7 +12,7 @@
 Plugin Name: Geocoder WordPress Plugin
 Plugin URI: http://magshare.org/geolocator-tool/
 Description: This is a WordPress plugin implementation of the BMLT Tools Geolocator Tool, which is highly useful for many purposes.
-Version: 1.1.9
+Version: 1.1.10
 Install: Drop this directory into the "wp-content/plugins/" directory and activate it.
 You need to specify "<!--GEOLOCATOR-->" in the code section of a page or a post.
 */ 
@@ -24,13 +27,14 @@ You need to specify "<!--GEOLOCATOR-->" in the code section of a page or a post.
 
 class GeoLocatorPlugin
 	{
-	var $menu_string = "Geolocator Options";	///< The string shown in the settings menu.
-	var $adminOptionsName = "GeoLocatorAdminOptions";	///< The name, in the database, for the options for this plugin.
-	var $default_gkey = 'localhost';						///< This is the default Google Maps API key (localhost).
-	var $default_show_map = true;						///< Set this to false if you want the map hidden (may still show the long/lat fields).
-	var $default_show_debug_checkbox = true;				///< Set this to false to hide the raw Google response data.
-	var $default_show_long_lat_info = true;				///< Set this to false to hide the long/lat displays, as well as the map.
-	var $default_long_lat_zoom = array ( 'latitude' => 37.0, 'longitude' => -96.0, 'zoom' => 4 );	///< The initial view of the Google Map.
+	static $options_title = 'Geolocator Plugin Options';	///< This is the title that is displayed over the options.
+	static $menu_string = "Geolocator Options";	///< The string shown in the settings menu.
+	static $adminOptionsName = "GeoLocatorAdminOptions";	///< The name, in the database, for the options for this plugin.
+	static $default_gkey = 'localhost';						///< This is the default Google Maps API key (localhost).
+	static $default_show_map = true;						///< Set this to false if you want the map hidden (may still show the long/lat fields).
+	static $default_show_debug_checkbox = true;				///< Set this to false to hide the raw Google response data.
+	static $default_show_long_lat_info = true;				///< Set this to false to hide the long/lat displays, as well as the map.
+	static $default_long_lat_zoom = array ( 'latitude' => 37.0, 'longitude' => -96.0, 'zoom' => 4 );	///< The initial view of the Google Map.
 	
 	/**
 		\brief Read in a file, and clean (optimize) it before returning its contents as a string.
@@ -91,9 +95,9 @@ class GeoLocatorPlugin
 	/**
 		\brief This echoes the appropriate head element stuff for this plugin.
 	*/
-	function head ( )
+	static function head ( )
 		{
-		$options = $this->_getAdminOptions ( );
+		$options = self::_getAdminOptions ( );
 		$head_string = '<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />';
 		$head_string .= '<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='.htmlspecialchars ( $options['gKey'] ).'" type="text/javascript"></script>';
 		$head_string .= '<style type="text/css">/* <![CDATA[ */'.self::_get_optimized_file ( dirname ( __FILE__ ).'/index.html', '/*##START_CSS##*/', '/*##END_CSS##*/' ).'#bmlt_tools_outer_container{text-align:center;clear:both;float:none}#bmlt_tools_main_container{position:static;margin-top:8px;margin-bottom:8px;margin-left:auto;margin-right:auto}/* ]]> */</style>';
@@ -105,9 +109,9 @@ class GeoLocatorPlugin
 		
 		\returns an XHTML string, containing the processed page content.
 	*/
-	function content_filter ( $the_content )
+	static function content_filter ( $the_content )
 		{
-		$options = $this->_getAdminOptions ( );
+		$options = self::_getAdminOptions ( );
 		$the_new_content = '<script type="text/javascript">/* <![CDATA[ */';
 		$the_new_content .= self::_get_optimized_file ( dirname ( __FILE__ ).'/index.html', '/*##START_JAVASCRIPT_ALL##*/', '/*##END_JAVASCRIPT_ALL##*/' );
 
@@ -138,15 +142,15 @@ class GeoLocatorPlugin
 		$the_new_content .= self::_get_optimized_file ( dirname ( __FILE__ ).'/index.html', '<!--##START_HTML##-->', '<!--##END_HTML##-->' );
 		$the_new_content .= '<script type="text/javascript">/* <![CDATA[ */ GeocodeInitializeOnLoad(); /* ]]> */</script>';
 
-		return preg_replace ( "|(\<p[^>]*?>)?\<\!\-\-GEOLOCATOR\-\-\>(\<\/p[^>]*?>)?|", $the_new_content, $the_content );
+		return preg_replace ( "|(\<p[^>]*>)?\<\!\-\-GEOLOCATOR\-\-\>(\<\/p[^>]*>)?|", $the_new_content, $the_content );
 		}
 
 	/**
 		\brief This echoes the admin page.
 	*/
-	function printAdminPage ( )
+	static function printAdminPage ( )
 		{
-		$options = $this->_getAdminOptions();
+		$options = self::_getAdminOptions ( );
 		
 		$report = '';
 		
@@ -160,7 +164,7 @@ class GeoLocatorPlugin
 				{
 				$options['show_map'] = 0;
 				}
-			update_option ( $this->adminOptionsName, $options );
+			update_option ( self::$adminOptionsName, $options );
 			$report = '<h4 style="color:green;font-style:italic;text-align:center">Options Saved</h4>';
 			}
 		
@@ -181,19 +185,19 @@ class GeoLocatorPlugin
 	/**
 		\brief TOOL: This gets the admin options from the database.
 	*/
-	function _getAdminOptions ( )
+	static function _getAdminOptions ( )
 		{
 		$GeoLocatorOptions = array (
-									'gKey' => $this->default_gkey,
-									'longitude' => $this->default_long_lat_zoom['longitude'],
-									'latitude' => $this->default_long_lat_zoom['latitude'],
-									'zoom' => $this->default_long_lat_zoom['zoom'],
-									'show_map' => $this->default_show_map,
-									'show_debug' => $this->default_show_debug_checkbox,
-									'show_long_lat' => $this->default_show_long_lat_info
+									'gKey' => self::$default_gkey,
+									'longitude' => self::$default_long_lat_zoom['longitude'],
+									'latitude' => self::$default_long_lat_zoom['latitude'],
+									'zoom' => self::$default_long_lat_zoom['zoom'],
+									'show_map' => self::$default_show_map,
+									'show_debug' => self::$default_show_debug_checkbox,
+									'show_long_lat' => self::$default_show_long_lat_info
 									);
 
-		$old_GeoLocatorOptions = get_option ( $this->adminOptionsName );
+		$old_GeoLocatorOptions = get_option ( self::$adminOptionsName );
 		
 		if ( is_array ( $old_GeoLocatorOptions ) && count ( $old_GeoLocatorOptions ) )
 			{
@@ -208,44 +212,28 @@ class GeoLocatorPlugin
 			$GeoLocatorOptions['show_map'] = 0;
 			}
 
-		update_option ( $this->adminOptionsName, $GeoLocatorOptions );
+		update_option ( self::$adminOptionsName, $GeoLocatorOptions );
 
 		return $GeoLocatorOptions;
 		}
 };
 
-if ( class_exists ( "GeoLocatorPlugin" ) )
+if ( !function_exists ( "GeoLocatorPlugin_ap" ) )
 	{
-	global $GeoLocatorPlugin;
-	
-	if ( !isset ( $GeoLocatorPlugin ) )
+	/**
+		\brief This creates the admin options menu and sets the options page funtion.
+	*/
+	function GeoLocatorPlugin_ap ( )
 		{
-		$GeoLocatorPlugin = new GeoLocatorPlugin();
-		
-		if ( !function_exists ( "GeoLocatorPlugin_ap" ) )
+		if ( function_exists ( 'add_options_page' ) )
 			{
-			/**
-				\brief This creates the admin options menu and sets the options page funtion.
-			*/
-			function GeoLocatorPlugin_ap ( )
-				{
-				global $GeoLocatorPlugin;
-				if ( !isset ( $GeoLocatorPlugin ) )
-					{
-					return;
-					}
-
-				if ( function_exists ( 'add_options_page' ) )
-					{
-					add_options_page ( $GeoLocatorPlugin->options_title, $GeoLocatorPlugin->menu_string, 9, basename ( __FILE__ ), array ( &$GeoLocatorPlugin, 'printAdminPage' ) );
-					}
-				}	
-		
-			add_action ( 'admin_menu', 'GeoLocatorPlugin_ap' );
+			add_options_page ( GeoLocatorPlugin::$options_title, GeoLocatorPlugin::$menu_string, 9, basename ( __FILE__ ), array ( "GeoLocatorPlugin", 'printAdminPage' ) );
 			}
-		}
-	
-	add_filter ( 'the_content', array ( &$GeoLocatorPlugin, 'content_filter'), 10  );
-	add_filter ( 'wp_head', array ( &$GeoLocatorPlugin, 'head' ) );
+		}	
+
+	add_action ( 'admin_menu', 'GeoLocatorPlugin_ap' );
 	}
+
+add_filter ( 'the_content', array ( "GeoLocatorPlugin", 'content_filter')  );
+add_filter ( 'wp_head', array ( "GeoLocatorPlugin", 'head' ) );
 ?>
