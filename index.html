@@ -27,9 +27,12 @@
 					If there are more than one places that correspond to the given data, they are displayed, one at a time, and links
 					are provided to help you select which one is displayed.
 			-------------------------------------------------------------------------------------------------------------------------
-			Version: 1.1.9
+			Version: 1.2
 			
 			RELEASE NOTES:
+				-1.2 Release
+					- Added access to the W3C Gelocator options ("Where Am I Now?")
+					
 				- February 6, 2010 -1.1.9 Release
 					- Worked on optimizing and improving the appearance of the accuracy bar.
 					
@@ -143,6 +146,13 @@
 						SetBlankDebugData ();
 						document.getElementById('bmlt_tools_debug_display').style.display = 'block';
 						};
+					
+					// If the browser can handle it, we show the "Where Am I?" button.
+					if ( navigator && navigator.geolocation )
+						{
+						document.getElementById('bmlt_tools_where_am_i').style.display = 'block';
+						};
+					
 					ClearLookupResults ( );
 					DrawAccuracyScale();
 					ClearAddressForm ();
@@ -255,6 +265,41 @@
 					};
 			};
 	
+		/***************************************************************************************/
+		/**
+			\brief Uses the browser's geolocation information to set the long/lat fields in the
+			data entry form.
+			
+			This uses the W3C Gelolocation API (New) to access any location information that the
+			browser wants to share with us (usually an iPhone, Android or Crackberry).
+			
+				http://www.w3.org/TR/geolocation-API/
+		*/
+		function WhereAmI()
+			{
+				navigator.geolocation.getCurrentPosition(WhereAmI_CallBackSuccess);
+			};
+	
+	
+		/***************************************************************************************/
+		/**
+			\brief This is the "success" callback. If the browser responds with a position, it
+			is returned here, and the callback will set the long/lat fields in the entry (yellow)
+			form, which will also set the yellow marker.
+			
+			This uses the W3C Gelolocation API (New) to access any location information that the
+			browser wants to share with us (usually an iPhone, Android or Crackberry).
+			
+				http://www.w3.org/TR/geolocation-API/
+		*/
+		function WhereAmI_CallBackSuccess( in_position_object	///< The position of the browser.
+											)
+			{
+				document.getElementById('bmlt_tools_address_long').value = in_position_object.coords.longitude;
+				document.getElementById('bmlt_tools_address_lat').value = in_position_object.coords.latitude;
+				document.getElementById('bmlt_tools_address_lat').focus();
+			};
+			
 	/***********************************************************************************************/
 	/**************************************** ENTRY DISPLAY ****************************************/
 	/***********************************************************************************************/
@@ -1496,6 +1541,13 @@
 				left: 297px;
 				}
 				
+			#bmlt_tools_where_am_i
+				{
+				width: 50%;
+				text-align:center;
+				float:left;
+				};
+				
 			#bmlt_tools_acc_min,
 			#bmlt_tools_acc_max
 				{
@@ -1587,7 +1639,7 @@
 							<input type="text" id="bmlt_tools_address_long" value="" onchange="if(g_show_map_checkbox)SetMapEntryMarker()" onkeyup="if(g_show_map_checkbox)SetMapEntryMarker()" onfocus="g_focused_element=this" />
 							<label for="bmlt_tools_address_lat">Latitude:</label>
 							<input type="text" id="bmlt_tools_address_lat" value="" onchange="if(g_show_map_checkbox)SetMapEntryMarker()" onkeyup="if(g_show_map_checkbox)SetMapEntryMarker()" onfocus="g_focused_element=this" />
-							<div id="bmlt_tools_address_reverse_submit_line"><input type="button" id="bmlt_tools_address_reverse_submit" value="Long/Lat Lookup" onclick="ReverseLookup()" title="Do a reverse lookup (find the address) for this longitude and latitude." /></div>
+							<div id="bmlt_tools_address_reverse_submit_line"><div id="bmlt_tools_where_am_i" style="display:none"><input type="button" value="Where Am I?" onclick="WhereAmI()" title="Set the Longitude and Latitude to Your Current Location" /></div><input type="button" id="bmlt_tools_address_reverse_submit" value="Long/Lat Lookup" onclick="ReverseLookup()" title="Do a reverse lookup (find the address) for this longitude and latitude." /></div>
 						</div>
 						<div class="clear_both"></div>
 					</div>
