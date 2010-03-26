@@ -27,9 +27,12 @@
 					If there are more than one places that correspond to the given data, they are displayed, one at a time, and links
 					are provided to help you select which one is displayed.
 			-------------------------------------------------------------------------------------------------------------------------
-			Version: 1.2.1
+			Version: 1.2.2
 			
 			RELEASE NOTES:
+				- March 26, 2010 -1.2.2 Release
+					- The accuracy bar fix was not sufficient. It needed more.
+					
 				- March 11, 2010 -1.2.1 Release
 					- Fixed a CSS bug in the accuracy bar.
 					
@@ -1448,7 +1451,7 @@
 				}
 				
 			/* This is the gradient that displays the accuracy of the geolocator response */
-			#bmlt_tools_main_container #bmlt_tools_accuracy_gradient
+			#bmlt_tools_main_container .bmlt_tools_accuracy_gradient
 				{
 				float:left;
 				width: 300px;
@@ -1460,6 +1463,26 @@
 				margin-right: auto;
 				background-color:#ffc;
 				padding-left:2px;
+				}
+				
+			#bmlt_tools_main_container .bmlt_tools_acc_min,
+			#bmlt_tools_main_container .bmlt_tools_acc_max
+				{
+				float:left;
+				width: 47px;
+				height: 20px;
+				line-height: 20px;
+				font-size: 9px;
+				vertical-align:middle;
+				}
+			
+			/* This is the big "NO DATA" in an empty debug area. */
+			#bmlt_tools_main_container .no_data_span
+				{
+				font-weight: bold;
+				font-size: large;
+				font-style: italic;
+				color: #777;
 				}
 			
 			/* This is the accuracy indicator that moves around the bar. */
@@ -1544,32 +1567,12 @@
 				left: 297px;
 				}
 				
-			#bmlt_tools_where_am_i
+			#bmlt_tools_main_container #bmlt_tools_where_am_i
 				{
 				width: 50%;
 				text-align:center;
 				float:left;
 				};
-				
-			#bmlt_tools_acc_min,
-			#bmlt_tools_acc_max
-				{
-				float:left;
-				width: 45px;
-				line-height: 24px;
-				height:20px;
-				font-size: xx-small;
-				vertical-align:middle;
-				}
-			
-			/* This is the big "NO DATA" in an empty debug area. */
-			#bmlt_tools_main_container .no_data_span
-				{
-				font-weight: bold;
-				font-size: large;
-				font-style: italic;
-				color: #777;
-				}
 /*##END_CSS##*/		
 		/* ]]> */
 		</style>
@@ -1691,9 +1694,9 @@
 					<div id="bmlt_tools_accuracy_display" style="display: none">
 						<div id="bmlt_tools_accuracy_label">Accuracy:</div>
 						<div id="bmlt_tools_padding_div_scale">
-							<div id="bmlt_tools_acc_min">Less</div>
-							<div id="bmlt_tools_accuracy_gradient"></div>
-							<div id="bmlt_tools_acc_max">More</div>
+							<div id="bmlt_tools_acc_min" class="bmlt_tools_acc_min">Less</div>
+							<div id="bmlt_tools_accuracy_gradient" class="bmlt_tools_accuracy_gradient"></div>
+							<div id="bmlt_tools_acc_max" class="bmlt_tools_acc_max">More</div>
 						</div>
 						<div class="one_line_form">
 							<div class="label">Street Address:</div>
