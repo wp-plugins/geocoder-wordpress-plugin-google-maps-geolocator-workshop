@@ -27,9 +27,12 @@
 					If there are more than one places that correspond to the given data, they are displayed, one at a time, and links
 					are provided to help you select which one is displayed.
 			-------------------------------------------------------------------------------------------------------------------------
-			Version: 1.2.2
+			Version: 1.2.3
 			
 			RELEASE NOTES:
+				- April 30, 2010 -1.2.3 Release
+					- Added scroll wheel zoom to the map.
+					
 				- March 26, 2010 -1.2.2 Release
 					- The accuracy bar fix was not sufficient. It needed more.
 					
@@ -878,9 +881,12 @@
 	
 							if ( g_map )
 								{
-								g_map.addControl(new GLargeMapControl());
-								g_map.addControl(new GScaleControl());
-								g_map.addControl(new GMapTypeControl());
+								g_map.addControl(new GLargeMapControl());	// Zoom/Pan controls
+								g_map.addControl(new GScaleControl());		// Display the scale
+								g_map.addControl(new GMapTypeControl());	// Allow user to select different map types.
+								g_map.addMapType ( G_PHYSICAL_MAP );		// Terrain/Earth
+								g_map.enableScrollWheelZoom();				// Allow scroll wheel zooming.
+								g_map.enableContinuousZoom();				// Allow smooth zooms.
 								// We use the event handler to track the map state.
 								GEvent.addListener( g_map, "moveend", MoveEnd );
 								GEvent.addListener( g_map, "click", MapClicked );
